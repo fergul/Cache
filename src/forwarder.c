@@ -414,7 +414,7 @@ int main(int argc, char *argv[]) {
     void *dummy;
     int status;
     char *p, *t;
- 
+
     process_args(argc, argv);
     log_it(LOG_NONE, "obtaining target list of forwarders\n");
     if (!(target = read_forwarders(f_config, log_level))) {
@@ -427,7 +427,7 @@ int main(int argc, char *argv[]) {
         exit(-1);
     }
     log_it(LOG_NONE, "initializing rpc system\n");
-    if (!rpc_init(f_port)) {
+    if (!rpc_init("localhost", f_port)) {
         fprintf(stderr, "Failure to initialize rpc system\n");
         exit(-1);
     }

@@ -53,7 +53,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#define USAGE "./cache [-p port] [-l packets|stats] [-c config-file]"
+#define USAGE "./cache [-hn hostname] [-p port] [-l packets|stats] [-c config-file]"
 #define LOG_STATS 1
 #define LOG_PACKETS 2
 #define STATS_COUNT 10000
@@ -120,6 +120,7 @@ int main(int argc, char *argv[]) {
     RpcEndpoint sender;
     unsigned len;
     RpcService rps;
+    char *hostname;
     unsigned short port, snap;
     int i, j;
     Rtab *results;
@@ -130,6 +131,7 @@ int main(int argc, char *argv[]) {
     tstamp_t start, finish;
     int isreadonly;
 
+    hostname = NULL;
     port = HWDB_SERVER_PORT;
     snap = HWDB_SNAPSHOT_PORT;
     log = LOG_STATS;
@@ -153,6 +155,8 @@ int main(int argc, char *argv[]) {
             }
         } else if (strcmp(argv[i], "-c") == 0) {
             cfile = argv[j];
+        } else if (strcmp(argv[i], "-hn") == 0) {
+            hostname = argv[j];
         } else {
             fprintf(stderr, "Unknown flag: %s %s\n", argv[i], argv[j]);
         }
@@ -165,7 +169,7 @@ int main(int argc, char *argv[]) {
         loadfile(cfile, log, isreadonly);
     }
     printf("initializing rpc system\n");
-    if (!rpc_init(port)) {
+    if (!rpc_init(hostname, port)) {
         fprintf(stderr, "Failure to initialize rpc system\n");
         exit(-1);
     }

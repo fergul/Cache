@@ -225,7 +225,7 @@ int connect_env(char** host, unsigned short* port, char** servicename) {
 
 int init_cache(char* host, unsigned short port, char* servicename) {
     int err;
-    err = !rpc_init(0);
+    err = !rpc_init("localhost", 0);
     if(err) {
         printf("rpc_init failed\n");
         return 1;

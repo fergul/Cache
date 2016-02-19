@@ -97,6 +97,7 @@ int main(int argc, char *argv[]) {
     char resp[SOCK_RECV_BUF_LEN];
     int n;
     unsigned len;
+    char *hostname;
     char *host;
     unsigned short port;
     struct timeval start, stop;
@@ -110,6 +111,7 @@ int main(int argc, char *argv[]) {
     int nreplies;
     char *service;
 
+    hostname = NULL;
     host = HWDB_SERVER_ADDR;
     port = HWDB_SERVER_PORT;
     service = "HWDB";
@@ -142,12 +144,14 @@ int main(int argc, char *argv[]) {
                 log++;
             else
                 fprintf(stderr, "usage: %s\n", USAGE);
+        } else if (strcmp(argv[i], "-hn") == 0) {
+              hostname = argv[j];
         } else {
             fprintf(stderr, "Unknown flag: %s %s\n", argv[i], argv[j]);
         }
         i = j + 1;
     }
-    if (!rpc_init(0)) {
+    if (!rpc_init(hostname, 0)) {
         fprintf(stderr, "Failure to initialize rpc system\n");
         exit(-1);
     }
@@ -240,4 +244,3 @@ int main(int argc, char *argv[]) {
     rpc_disconnect(rpc);
     return 0;
 }
-

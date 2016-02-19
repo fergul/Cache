@@ -59,7 +59,7 @@
 #include <unistd.h>
 #include <signal.h>
 
-#define USAGE "./registercallback [-h host] [-p port] [-s service] [-t minutes] -a automaton"
+#define USAGE "./registercallback [-h host] [-hn hostname] [-p port] [-s service] [-t minutes] -a automaton"
 
 /*
  * global data shared by main thread and handler thread
@@ -167,6 +167,7 @@ static struct timespec time_delay = {0, 0};
 int main(int argc, char *argv[]) {
     unsigned rlen;
     Q_Decl(query, 10000);
+    char *hostname;
     char resp[100], myhost[100];
     unsigned short myport;
     pthread_t thr;
@@ -178,6 +179,7 @@ int main(int argc, char *argv[]) {
     int delay;
     int status;
 
+    hostname = NULL;
     target = HWDB_SERVER_ADDR;
     port = HWDB_SERVER_PORT;
     service = "Handler";
@@ -198,6 +200,8 @@ int main(int argc, char *argv[]) {
             service = argv[j];
         else if (strcmp(argv[i], "-a") == 0)
             automaton = argv[j];
+        else if (strcmp(argv[i], "-hn") == 0)
+            hostname = argv[j];
         else {
             fprintf(stderr, "Unknown flag: %s %s\n", argv[i], argv[j]);
         }
@@ -212,7 +216,7 @@ int main(int argc, char *argv[]) {
     /*
      * initialize the RPC system and offer the Callback service
      */
-    if (!rpc_init(0)) {
+    if (!rpc_init(hostname, 0)) {
         fprintf(stderr, "Initialization failure for rpc system\n");
         exit(-1);
     }
