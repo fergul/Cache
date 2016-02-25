@@ -6,18 +6,18 @@ int main (int argc, const char * argv[])
 {
   SQLStmt stmt = SQLSTMT__INIT; // AMessage
   Register reg = REGISTER__INIT;
-  void *buf;                     // Buffer to store serialized data
+  uint8_t* buf;                     // Buffer to store serialized data
   unsigned len;                  // Length of serialized data
   stmt.type = SQL__REGISTER;
   stmt.aregister = &reg;
-  reg.automaton = "asdsadasd";
-  reg.ipaddr = "asdsadasd";
-  reg.port = 2020;
-  reg.service = "sdasdsad";
+  reg.automaton = "Some code";
+  reg.ipaddr = "192.168.0.1";
+  reg.port = "2020";
+  reg.service = "EncodeService";
 
   len = sqlstmt__get_packed_size(&stmt);
 
-  buf = malloc(len);
+  buf = (uint8_t*)malloc(len);
   sqlstmt__pack(&stmt, buf);
 
   fprintf(stderr,"Writing %d serialized bytes\n",len); // See the length of message

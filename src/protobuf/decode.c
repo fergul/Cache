@@ -43,7 +43,7 @@ int main (int argc, const char * argv[])
     printf("Service: %s\n",stmt->aregister->service);
     printf("Automaton: %s\n",stmt->aregister->automaton);
     printf("IP addr: %s\n",stmt->aregister->ipaddr);
-    printf("Port: %d\n",stmt->aregister->port);
+    printf("Port: %s\n",stmt->aregister->port);
   }
 
   // Free the unpacked message
