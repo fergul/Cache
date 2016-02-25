@@ -1,11 +1,12 @@
 syntax = "proto2";
 
+// Matches types in typetable.h
 enum CacheType {
   BOOL = 0;
   INT = 1;
   REAL = 2;
-  STRING = 3;
-  TStamp = 4;
+  STRING = 4;
+  TStamp = 8;
 }
 
 enum SQL {
@@ -25,7 +26,7 @@ message SQLStmt {
   //optional Update update = 5;
   //optional Show show = 6;
   //optional ShowTK showtk = 7;
-  optional Register aregister= 8;
+  optional Register aregister = 8;
   optional Unregister aunregister = 9;
 }
 
@@ -54,7 +55,7 @@ message Insert {
 message Register {
   required string automaton = 1;
   optional string ipaddr = 2;
-  required int32 port = 3;
+  required string port = 3;
   required string service = 4;
 }
 

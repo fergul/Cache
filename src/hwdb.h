@@ -38,6 +38,7 @@
 #include "table.h"
 #include "automaton.h"
 #include "sqlstmts.h"
+#include "protobuf/cache.pb-c.h"
 
 #define SUBSCRIPTION 1
 #define REGISTRATION 2
@@ -52,6 +53,7 @@ typedef struct callBackInfo {
 } CallBackInfo;
 
 int hwdb_init(int usesRPC);
+Rtab *hwdb_exec_query_pb(SQLStmt *pbstmt, int isreadonly);
 Rtab *hwdb_exec_query(char *query, int isreadonly);
 int hwdb_send_event(Automaton *au, char *buf, int ifdisconnect);
 Table *hwdb_table_lookup(char *name);

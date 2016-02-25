@@ -29,14 +29,17 @@ AC_SEARCH_LIBS([rpc_init],[srpc],[have_srpc="yes"],[have_srpc="no"])
 
 # Check for the ADTs library
 AC_SEARCH_LIBS([it_hasNext],[ADTs],[have_adts="yes"],[have_adts="no"])
-
-
+AC_SEARCH_LIBS([protobuf_c_message_pack],[protobuf-c],[have_protobuf_c="yes"],[have_protobuf_c="no"])
+AC_PROG_CC
+AC_PROG_LEX
+AC_PROG_YACC
 ##########################################################################################
 # End of configure summary output
 DE_STAT("pthreads found", $have_pthreads)
 DE_STAT("libmath found", $have_m)
 DE_STAT("libsrpc found", $have_srpc)
 DE_STAT("libADTs found", $have_adts)
+DE_STAT("libprotobuf-c found", $have_protobuf_c)
 
 ##########################################################################################
 # Generate files

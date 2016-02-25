@@ -127,7 +127,42 @@ static void do_cleanup(void) {
     }
 }
 #endif /* HWDB_PUBLISH_IN_BACKGROUND */
-
+Rtab *hwdb_exec_query_pb(SQLStmt *pbstmt, int isreadonly) {
+    switch (pbstmt->type) {
+        case SQL__REGISTER: {
+            printf("REGISTER\n");
+            stmt.type = SQL_TYPE_REGISTER;
+            stmt.sql.regist.automaton = pbstmt->aregister->automaton;
+            stmt.sql.regist.ipaddr = pbstmt->aregister->ipaddr;
+            stmt.sql.regist.port = pbstmt->aregister->port;
+            stmt.sql.regist.service = pbstmt->aregister->service;
+            break;
+        }
+        case SQL__UNREGISTER: {
+          au_destroy(pbstmt->aunregister->id);
+          break;
+        }
+        case SQL__CREATE: {
+          stmt.type = SQL_TYPE_CREATE;
+          stmt.sql.create.tablename = pbstmt->create->name;
+          stmt.sql.create.ncols = pbstmt->create->n_column;
+          char **namearray = (char **) malloc(sizeof(char *) * pbstmt->create->n_column);
+          int **typearray = (int **) malloc (sizeof(int *) *pbstmt->create->n_column);
+          int col;
+          for (col = 0; col < pbstmt->create->n_column; col++){
+            namearray[col] = pbstmt->create->column[col]->name;
+            typearray[col] = (int*) &(pbstmt->create->column[col]->type);
+          }
+          stmt.sql.create.colname = namearray;
+          stmt.sql.create.coltype = typearray;
+          stmt.sql.create.tabletype = 0;
+          stmt.sql.create.primary_column = -1;
+          break;
+        }
+    }
+    sql_print();
+    return hwdb_exec_stmt(isreadonly);
+}
 Rtab *hwdb_exec_query(char *query, int isreadonly) {
     void *result;
 #ifdef HWDB_PUBLISH_IN_BACKGROUND
@@ -428,7 +463,7 @@ int hwdb_register(sqlregister *regist) {
 
     /* compile automaton */
     /* automaton has leading and trailing quotes */
-    strcpy(buf, regist->automaton+1);
+    strcpy(buf, regist->automaton);
     /* convert '\r' back into '\n' */
     for (p = buf; *p != '\0'; p++)
         if (*p == '\r')

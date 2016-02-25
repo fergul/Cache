@@ -58,6 +58,7 @@
  *           by "WARNING> "; otherwise, warningf() statements are compiled
  *           out of the code
  */
+ #define DEBUG
 #ifdef DEBUG
 #define debugf printf("DEBUG> "); printf
 #ifndef LOG

@@ -52,6 +52,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include "protobuf/cache.pb-c.h"
 
 #define USAGE "./cache [-p port] [-l packets|stats] [-c config-file]"
 #define LOG_STATS 1
@@ -117,6 +118,8 @@ static void crtolf(char *buf) {
 }
 
 int main(int argc, char *argv[]) {
+    SQLStmt *stmt;
+    unsigned long msec;
     RpcEndpoint sender;
     unsigned len;
     RpcService rps;
@@ -224,6 +227,35 @@ int main(int argc, char *argv[]) {
             strcpy(tmp, buf);
             crtolf(tmp);
             MSG("Received: %s", tmp);
+        }
+        // struct timeval start, stop;
+        // gettimeofday(&start, NULL);
+
+        stmt = sqlstmt__unpack(NULL, len-1, (uint8_t*) buf);
+        if (stmt == NULL)
+        {
+          fprintf(stderr, "error unpacking incoming message\n");
+        } else {
+          // display the message's fields.
+          printf("Received command %d\n", stmt->type);  // required field
+          if (stmt->type == SQL__REGISTER) {                   // handle optional field
+            printf("Service: %s\n",stmt->aregister->service);
+            printf("Automaton: %s\n",stmt->aregister->automaton);
+            printf("IP addr: %s\n",stmt->aregister->ipaddr);
+            printf("Port: %s\n", stmt->aregister->port);
+          }
+          results = hwdb_exec_query_pb(stmt, isreadonly);
+          // gettimeofday(&stop, NULL);
+          // if (stop.tv_usec < start.tv_usec) {
+          //     stop.tv_usec += 1000000;
+          //     stop.tv_sec--;
+          // }
+          // msec = 1000 * (stop.tv_sec - start.tv_sec) +
+          //        (stop.tv_usec - start.tv_usec) / 1000;
+          //
+          // fprintf(stderr, "processed in %ld.%03ld seconds\n",
+          //         msec/1000, msec%1000);
+          continue;
         }
         p = strchr(buf, ':');
         if (p == NULL) {
