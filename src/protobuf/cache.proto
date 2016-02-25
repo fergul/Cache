@@ -1,0 +1,63 @@
+syntax = "proto2";
+
+enum CacheType {
+  BOOL = 0;
+  INT = 1;
+  REAL = 2;
+  STRING = 3;
+  TStamp = 4;
+}
+
+enum SQL {
+  CREATE = 0;
+  INSERT = 1;
+  DELETE = 2;
+  UPDATE = 3;
+  REGISTER = 4;
+  UNREGISTER = 5;
+}
+
+message SQLStmt {
+  required SQL type = 1;
+  optional Create create = 2;
+  optional Insert insert = 3;
+  //optional Delete delete = 4;
+  //optional Update update = 5;
+  //optional Show show = 6;
+  //optional ShowTK showtk = 7;
+  optional Register aregister= 8;
+  optional Unregister aunregister = 9;
+}
+
+message Create {
+  required string name = 1; // Table name
+  repeated Column column = 2; // Followed by Columns (name, type)
+  message Column {
+    required string name = 1;
+    required CacheType type = 2;
+  }
+}
+
+message Insert {
+  required string name = 1; // Table name
+  repeated Data data = 2; // Followed by a columns of data
+  message Data {
+    required CacheType type = 1;
+    optional int64 int_val = 2;
+    optional bool bool_val = 3;
+    optional double real_val = 4;
+    optional string str_val = 5;
+    optional string tstamp_val = 6;
+  }
+}
+
+message Register {
+  required string automaton = 1;
+  optional string ipaddr = 2;
+  required int32 port = 3;
+  required string service = 4;
+}
+
+message Unregister {
+  required int64 id = 1;
+}
